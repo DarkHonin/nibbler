@@ -1,0 +1,2 @@
+dep:
+	make -C SDLap
