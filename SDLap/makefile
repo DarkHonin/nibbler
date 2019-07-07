@@ -26,6 +26,7 @@ $(SDL): $(SDL_BUILD_DIR) $(SDL_ARCHIVE)
 	unzip -o $(SDL_ARCHIVE) -d $(DEP_BUILD_DIR)
 	cd $(DEP_BUILD_DIR); \
 	cmake SDL2-2.0.9; \
+	./configure; \
 	make; \
 	cp -r SDL2-2.0.9/include/* include
 
@@ -42,3 +43,6 @@ re: fclean $(NAME)
 
 fclean:
 	rm -rf $(DEP_BUILD_DIR)
+
+test: $(OBJ) $(SDL)
+	clang++ $(OBJ) src/test.cpp $(FLAGS) $(INCLUDE) -LSDL -lSDL2 -F /Library/Frameworks
