@@ -33,4 +33,7 @@
 
 /.vscode/
 *.zip
-*/SDL/
+*.dll
+/SFML*/
+*.tar.gz
+nibbler
