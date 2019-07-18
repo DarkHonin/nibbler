@@ -8,13 +8,19 @@
 
 class GLFW : public Interface{
     public:
+        static key_callback onKey;
+
         GLFW();
         GLFW(GLFW const & obj);
         ~GLFW();
 
         int open_window(int width, int height);
+
         void drawBorder();
         void updateView();
+
+        void bindKeyCallback( const key_callback);
+        bool closing();
 
         std::string getName();
     private:

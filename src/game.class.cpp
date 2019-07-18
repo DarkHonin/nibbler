@@ -22,11 +22,17 @@ void Game::loadDll(std::string const path){
     this->interface_instance = init();
 }
 
+void handleKey(int key, int scancode, int mods){
+    std::cout << "key: " << key << "\tscancode" << scancode << "\tmod" << mods << std::endl;
+}
+
 void Game::run(){
     std::cout << "Loaded dll: " << this->interface_instance->getName() << std::endl;
     this->interface_instance->open_window(800, 600);
     std::cout << "Window open called" << std::endl;
-    while(true){
+    this->interface_instance->bindKeyCallback(handleKey);
+
+    while(!this->interface_instance->closing()){
         this->interface_instance->updateView();
     }
 }

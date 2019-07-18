@@ -6,6 +6,8 @@
 
 class SDL : public Interface{
     public:
+        static key_callback keyHook;
+
         SDL();
         SDL(SDL const & obj);
         ~SDL();
@@ -14,9 +16,13 @@ class SDL : public Interface{
         void drawBorder();
         void updateView();
 
+        void bindKeyCallback( const key_callback);
+        bool closing();
+
         std::string getName();
     private:
         SDL_Window *_window;
+        SDL_Surface *_drawSurface;
 };
 
 extern "C"{
