@@ -11,6 +11,8 @@ class SFML : public Interface{
         ~SFML();
 
         int open_window(int width, int height);
+        void drawBorder();
+        void updateView();
         std::string getName();
     private:
         sf::Window *_window;

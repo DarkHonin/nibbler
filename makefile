@@ -20,14 +20,14 @@ export INCLUDE_PATHS
 
 include $(BUILD)
 
-$(NAME): $(DLLS)
+$(NAME): $(DEPENDENCIES) $(SFML) $(DLLS)
 	@$(echo) "Building $(NAME)"
 	$(GCC) $(OBJ) $(INCLUDE) -o $(NAME) -ldl
 
 _fclean:
 	@make -C interface fclean BUILD=$(BUILD)
 
-scrub: dep_clear
+scrub: dep_clear _fclean clean
 
 $(DLLS):
 	@$(make) -C interface BUILD=$(BUILD) SDL=$(SDL) GLFW=$(GLFW) SFML=$(SFML)

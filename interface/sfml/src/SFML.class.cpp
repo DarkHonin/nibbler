@@ -10,6 +10,10 @@ int SFML::open_window(int width, int height){
     this->_window = new sf::Window(sf::VideoMode(width, height), this->getName());
     return 1;
 }
+
+void SFML::drawBorder(){}
+void SFML::updateView(){}
+
 std::string SFML::getName(){
     return std::string("SFMLibbler");
 }

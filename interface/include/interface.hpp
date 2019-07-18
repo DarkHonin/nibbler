@@ -2,10 +2,12 @@
 #define DINTERFACE_H
 #include <string>
 
-
 class Interface{
     public:
         virtual int open_window(int width, int height) = 0;
+        virtual void drawBorder() = 0;
+        virtual void updateView() = 0;
+
         virtual std::string getName() = 0;
 };
 

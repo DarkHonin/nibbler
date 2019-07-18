@@ -11,7 +11,7 @@ INCLUDE_PATHS += $(PATH)/include
 
 INCLUDE=$(addprefix -I, $(INCLUDE_PATHS))
 
-FLAGS= -std=c++11
+FLAGS= -std=c++11 -Wextra -Wall -Werror
 GCC=/usr/bin/clang++
 
 make: info $(OBJ_PATH) $(OBJ) $(NAME)
@@ -37,4 +37,4 @@ clean:
 fclean: clean
 	@$(rm) $(NAME)
 
-re: fclean $(NAME)
+re: fclean make

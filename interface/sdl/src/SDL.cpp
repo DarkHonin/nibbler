@@ -17,6 +17,11 @@ int SDL::open_window(int w, int h){
                                         SDL_WINDOW_SHOWN);
     return 1;
 }
+
+void SDL::drawBorder(){}
+void SDL::updateView(){}
+
+
 std::string SDL::getName(){
     return std::string("SDLibbler");
 }
