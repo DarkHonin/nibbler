@@ -9,7 +9,9 @@
 #define GLFW "interface/glfw.interface.dll"
 #define SFML "interface/sfml.interface.dll"
 
-
+#define WIDTH 40
+#define HEIGHT 40
+#define BLOCK 10
 
 class Game{
     public:

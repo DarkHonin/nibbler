@@ -6,7 +6,7 @@ PATHS=$(realpath sfml sdl glfw)
 echo = /bin/echo
 make=/usr/bin/make
 
-DLLS = $(GLFW_DLL) $(SDL_DLL) # $(SFML_DLL) 
+DLLS = $(GLFW_DLL) #$(SDL_DLL) # $(SFML_DLL) 
 
 make: $(DLLS)
 
@@ -17,7 +17,7 @@ $(SDL_DLL):
 	@$(make) -f sdl/makefile INTERFACE=$(realpath include) PATH=$(realpath sdl) SDL=$(SDL) BUILD=$(realpath $(BUILD))
 
 $(GLFW_DLL):
-	@$(make) -f glfw/makefile INTERFACE=$(realpath include) PATH=$(realpath glfw) GLFW=$(GLFW) BUILD=$(realpath $(BUILD))
+	@$(make) -f glfw/makefile INTERFACE=$(realpath include) PATH=$(realpath glfw) GLFW=$(GLFW) GLEW=$(GLEW) BUILD=$(realpath $(BUILD))
 
 fclean:
 	@for i in $(PATHS); do \

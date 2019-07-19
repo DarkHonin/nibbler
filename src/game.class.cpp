@@ -19,7 +19,7 @@ void Game::loadDll(std::string const path){
    InterfaceInit init = (InterfaceInit)dlsym(this->interface, "Interface_Init");
    err = dlerror();
     if(err) std::cout << err << std::endl;
-    this->interface_instance = init();
+    this->interface_instance = init(WIDTH, HEIGHT, BLOCK);
 }
 
 void handleKey(int key, int scancode, int mods){
@@ -28,11 +28,14 @@ void handleKey(int key, int scancode, int mods){
 
 void Game::run(){
     std::cout << "Loaded dll: " << this->interface_instance->getName() << std::endl;
-    this->interface_instance->open_window(800, 600);
-    std::cout << "Window open called" << std::endl;
+    
+    this->interface_instance->open_window();
+
     this->interface_instance->bindKeyCallback(handleKey);
 
     while(!this->interface_instance->closing()){
+        this->interface_instance->clear();
+        this->interface_instance->drawBorder();
         this->interface_instance->updateView();
     }
 }

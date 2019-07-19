@@ -2,6 +2,6 @@
 
 int main(){
     Game game;
-    game.loadDll(SDL);
+    game.loadDll();
     game.run();
 }

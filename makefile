@@ -1,11 +1,12 @@
 BREW=$(HOME)/.brew/bin/brew
 SDL=$(HOME)/.brew/Cellar/sdl2/2.0.9_1
 GLFW=$(HOME)/.brew/Cellar/glfw/3.3
+GLEW=$(HOME)/.brew/Cellar/glew/2.1.0
 SFML=$(HOME)/nibbler/SFML-2.5.1-macos-clang
 echo = /bin/echo
 BUILD = $(realpath build.mk)
 
-DEPENDENCIES= $(SDL) $(GLFW)
+DEPENDENCIES= $(SDL) $(GLFW) $(GLEW)
 
 DLLS=interface/sfml.interface.dll interface/sdl.interface.dll interface/glfw.interface.dll
 
@@ -24,13 +25,15 @@ $(NAME): $(DEPENDENCIES) $(SFML) $(DLLS)
 	@$(echo) "Building $(NAME)"
 	$(GCC) $(OBJ) $(INCLUDE) -o $(NAME) -ldl
 
+reall: _fclean re
+
 _fclean:
 	@make -C interface fclean BUILD=$(BUILD)
 
 scrub: dep_clear _fclean clean
 
 $(DLLS):
-	@$(make) -C interface BUILD=$(BUILD) SDL=$(SDL) GLFW=$(GLFW) SFML=$(SFML)
+	@$(make) -C interface BUILD=$(BUILD) SDL=$(SDL) GLFW=$(GLFW) SFML=$(SFML) GLEW=$(GLEW)
 
 $(SFML):
 	@curl https://www.sfml-dev.org/files/SFML-2.5.1-macOS-clang.tar.gz -o SFML-2.5.1-macOS-clang.tar.gz
