@@ -9,9 +9,6 @@
 
 class GLFW : public Interface{
     public:
-        static key_callback onKey;
-        static const GLfloat g_vertex_buffer_data[];
-        GLuint VertexArrayID;
 
         GLFW(int w, int h, int b);
         GLFW(GLFW const & obj);
@@ -33,12 +30,13 @@ class GLFW : public Interface{
         std::string getName();
     private:
         GLFWwindow *_window;
+        key_callback onKey;
         int width;
         int height;
         int block;
 };
 
-GLuint LoadShaders(const char* vertes, const char *fragment);
+GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
 
 extern "C"{
     Interface * Interface_Init(int w, int h, int b){
