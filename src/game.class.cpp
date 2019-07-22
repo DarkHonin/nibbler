@@ -14,6 +14,8 @@ void Game::render(){
     this->player.render(*this->interface_instance);
     this->apple.render(*this->interface_instance);
 
+    this->interface_instance->drawBlock(5,5,Color(RED));
+
     this->interface_instance->clear();
     this->interface_instance->updateView();
 }
