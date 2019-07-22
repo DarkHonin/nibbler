@@ -1,8 +1,9 @@
 #include "GLFW.class.hpp"
 #include <iostream>
 
+GLuint LoadShaders(const char* vertShaderPath, const char* fragShaderPath);
 
-GLFW::GLFW(int w, int h, int b): width(w), height(h), block(b){
+GLFW::GLFW(int w, int h, int b): width(w), height(h), block(b), shader(LoadShaders(VERTEX_SHADER, FRAGMENT_SHADER)){
     glewExperimental = true;
     if (!glfwInit())
         throw new InterfaceException();
@@ -34,6 +35,7 @@ int GLFW::open_window(){
      }
     glfwMakeContextCurrent(this->_window);
     glViewport(0, 0, 800, 600);
+    glUseProgram(this->shader);
     /*
     glewExperimental = true;
 
@@ -44,11 +46,7 @@ int GLFW::open_window(){
     return 1;
 }
 
-void GLFW::drawBorder(){
-   
-}
-
-void GLFW::drawBlock(int x, int y, int width, int height){
+void GLFW::drawBlock(int x, int y, Color c){
     glBegin(GL_QUADS);
     glVertex2i(x * this->block, y * this->block);
     glVertex2i((x + width) * this->block, y * this->block);
@@ -69,7 +67,7 @@ void GLFW::updateView(){
 }
 
 void GLFW::clear(){
-    glClear( GL_COLOR_BUFFER_BIT );
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 std::string GLFW::getName(){
