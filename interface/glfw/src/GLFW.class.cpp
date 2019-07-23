@@ -11,17 +11,18 @@ static GLuint vertexbuffer;
 
 GLuint LoadShaders(const char* vertShaderPath, const char* fragShaderPath);
 
-GLFW::GLFW(int w, int h, int b): width(w), height(h), block(b), shader(LoadShaders(VERTEX_SHADER, FRAGMENT_SHADER)){
+GLFW::GLFW(int w, int h, int b): width(w), height(h), block(b){
     glewExperimental = true;
     if (!glfwInit())
         throw new InterfaceException();
-    
+    std::cout << "GLFW init" << std::endl;
     glfwWindowHint(GLFW_SAMPLES, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwSetErrorCallback([](int code, const char *message) {std::cout << "GLFW Error " << code << ": "<< message << std::endl;});
     
 }
 
@@ -43,6 +44,10 @@ int GLFW::open_window(){
      }
     glfwMakeContextCurrent(this->_window);
     glViewport(0, 0, 800, 600);
+    if (glewInit() != GLEW_OK) {
+        fprintf(stderr, "Failed to initialize GLEW\n");
+        return -1;
+    }    
 
     std::cout << "GEN" << std::endl;
     glGenBuffers(1, &vertexbuffer);
@@ -52,7 +57,7 @@ int GLFW::open_window(){
     // Give our vertices to OpenGL.
     std::cout << "BUFFER" << std::endl;
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
+    this->shader = LoadShaders(VERTEX_SHADER, FRAGMENT_SHADER);
     glUseProgram(this->shader);
     return 1;
 }

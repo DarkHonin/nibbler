@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string>
 #include <fstream>
+#include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -13,12 +14,8 @@ std::string LoadFileToString(const char* filepath)
     if (stream.is_open())
     {
         std::string line = "";
-
         while (getline(stream, line))
-        {
             fileData += "\n" + line;
-        }
-
         stream.close();
     }
 
@@ -27,11 +24,14 @@ std::string LoadFileToString(const char* filepath)
 
 GLuint LoadShaders(const char* vertShaderPath, const char* fragShaderPath)
 {
+    std::cout << "Creating shaders" << std::endl;
     
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
+    std::cout << "Reading vert" << std::endl;
     std::string vertShaderSource = LoadFileToString(vertShaderPath);
+    std::cout << "Reading frag" << std::endl;
     std::string fragShaderSource = LoadFileToString(vertShaderPath);
 
     const char* rawVertShaderSource = vertShaderSource.c_str();
@@ -39,7 +39,7 @@ GLuint LoadShaders(const char* vertShaderPath, const char* fragShaderPath)
 
     glShaderSource(VertexShaderID, 1, &rawVertShaderSource, NULL);
     glShaderSource(FragmentShaderID, 1, &rawFragShaderSource, NULL);
-
+    std::cout << "Compiling" << std::endl;
     glCompileShader(VertexShaderID);
     glCompileShader(FragmentShaderID);
 
