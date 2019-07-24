@@ -26,8 +26,8 @@ class Interface{
 
         virtual void drawBlock(int x, int y, Color c) = 0;
 
-        virtual void updateView() = 0;
-        virtual void clear() = 0;
+        virtual void prerender() = 0;
+        virtual void postrender() = 0;
 
         virtual void bindKeyCallback(const key_callback) = 0;
         virtual bool closing() = 0;

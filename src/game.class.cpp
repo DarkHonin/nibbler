@@ -11,25 +11,25 @@ Game::~Game(){}
 
 void Game::update(){}
 void Game::render(){
-    this->interface_instance->clear();
+    this->interface_instance->prerender();
     
     this->player.render(*this->interface_instance);
     this->apple.render(*this->interface_instance);
 
     this->interface_instance->drawBlock(5,5,Color(RED));
 
-    this->interface_instance->updateView();
+    this->interface_instance->postrender();
 }
 
 void Game::loadDll(std::string const define){
-   char *err;
+    char *err;
 
-   if(this->interface) dlclose(this->interface);
-   this->interface = dlopen(this->DLLS[define].c_str(), RTLD_NOW | RTLD_GLOBAL);
-   err = dlerror();
-   if(err) std::cout << err << std::endl;
-   InterfaceInit init = (InterfaceInit)dlsym(this->interface, "Interface_Init");
-   err = dlerror();
+    if(this->interface) dlclose(this->interface);
+    this->interface = dlopen(this->DLLS[define].c_str(), RTLD_NOW | RTLD_GLOBAL);
+    err = dlerror();
+    if(err) std::cout << err << std::endl;
+    InterfaceInit init = (InterfaceInit)dlsym(this->interface, "Interface_Init");
+    err = dlerror();
     if(err) std::cout << err << std::endl;
     this->interface_instance = init(this->map.getW(), this->map.getH(), BLOCK);
 }

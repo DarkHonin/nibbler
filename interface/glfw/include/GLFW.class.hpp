@@ -20,8 +20,8 @@ class GLFW : public Interface{
 
         void drawBlock(int x, int y, Color c = Color(0,0,0));
 
-        void updateView();
-        void clear();
+        void prerender();
+        void postrender();
 
         void bindKeyCallback( const key_callback);
         bool closing();
@@ -30,11 +30,14 @@ class GLFW : public Interface{
     private:
         GLFWwindow *_window;
         key_callback onKey;
+
         int width;
         int height;
         int block;
 
         GLuint shader;
+        GLuint vertexArray;
+        GLuint vertexBuffer;
 };
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);

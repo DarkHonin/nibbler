@@ -12,7 +12,7 @@
 #define GLFW "GLFW"
 #define SFML "SFML"
 
-#define BLOCK 10
+#define BLOCK 30
 
 
 class GameMap{
