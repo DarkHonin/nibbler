@@ -24,35 +24,51 @@ std::string LoadFileToString(const char* filepath)
 
 GLuint LoadShaders(const char* vertShaderPath, const char* fragShaderPath)
 {
-    std::cout << "Creating shaders" << std::endl;
+    printf("Compiling shader\n");
     
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-    std::cout << "Reading vert" << std::endl;
+    printf("VertexShader:\t%s\nFragmentShader:\t%s\n", vertShaderPath, fragShaderPath);
     std::string vertShaderSource = LoadFileToString(vertShaderPath);
-    std::cout << "Reading frag" << std::endl;
-    std::string fragShaderSource = LoadFileToString(vertShaderPath);
+    std::string fragShaderSource = LoadFileToString(fragShaderPath);
 
     const char* rawVertShaderSource = vertShaderSource.c_str();
     const char* rawFragShaderSource = fragShaderSource.c_str();
 
     glShaderSource(VertexShaderID, 1, &rawVertShaderSource, NULL);
     glShaderSource(FragmentShaderID, 1, &rawFragShaderSource, NULL);
-    std::cout << "Compiling" << std::endl;
-    glCompileShader(VertexShaderID);
-    glCompileShader(FragmentShaderID);
+    
+    
+    int  success;
+    char infoLog[512];
 
+    glCompileShader(VertexShaderID);
+    glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &success);
+    if(!success){
+        glGetShaderInfoLog(VertexShaderID, 255, NULL, infoLog);
+        printf("GLVertexShader::Log:: %s\n", infoLog);
+    }
+    
+    glCompileShader(FragmentShaderID);
+    glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &success);
+    if(!success){
+        glGetShaderInfoLog(FragmentShaderID, 255, NULL, infoLog);
+        printf("GLFragmentShader::Log:: %s\n", infoLog);
+    }
     GLuint program = glCreateProgram();
     glAttachShader(program, VertexShaderID);
     glAttachShader(program, FragmentShaderID);
     glLinkProgram(program);
-	
-	glDetachShader(program, VertexShaderID);
-	glDetachShader(program, FragmentShaderID);
+
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
+    if(!success){
+        glGetProgramInfoLog(program, 512, NULL, infoLog);
+        printf("Program::Log:: %s\n", infoLog);
+    }
 	
 	glDeleteShader(VertexShaderID);
-	glDeleteShader(FragmentShaderID);
+    glDeleteShader(FragmentShaderID);  
 
     return program;
 }

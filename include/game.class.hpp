@@ -7,13 +7,16 @@
 #include <iostream>
 #include <dlfcn.h>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
 
 #define SDL "SDL"
 #define GLFW "GLFW"
 #define SFML "SFML"
 
-#define BLOCK 30
+#define BLOCK 15
 
+class Game;
 
 class GameMap{
     public:
@@ -37,9 +40,13 @@ class GameObj{
 
         int getX() const;
         int getY() const;
+        void setX(int x);
+        void setY(int y);
+        void place(GameMap const & map);
 
         virtual void update(GameMap & map) = 0;
         virtual void render(Interface & i) = 0;
+
 
     private:
         int posx;
@@ -55,9 +62,11 @@ class Player : public GameObj{
 
         void update(GameMap & map);
         void render(Interface & i);
+        void place(GameMap const & map);
         
     private:
-        std::vector<Color> blocks;
+        std::vector<int *> blocks;
+        int direction;
 };
 
 class Apple : public GameObj{
@@ -79,17 +88,13 @@ class Game{
 
         void loadDll(std::string const path = GLFW);
         void run();
-    private:
-        void *interface;
-        Interface *interface_instance; 
+        
         GameMap map;
         Player player;
         Apple apple;
+    private:
+        void *interface;
+        Interface *interface_instance; 
 };
-
-
-#define RED Color((char)255, 0, 0)
-#define GREEN Color(0, (char)255, 0)
-#define BLUE Color(0, 0, (char)255)
 
 #endif

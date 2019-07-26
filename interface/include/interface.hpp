@@ -9,10 +9,10 @@ typedef void (*key_callback)(int key, int scancode, int mods);
 
 class Color{
     public:
-        char r;
-        char g;
-        char b;
-        Color(char r, char g, char b);
+        unsigned char r;
+        unsigned char g;
+        unsigned char b;
+        Color(unsigned char r, unsigned char g, unsigned char b);
         Color(Color const & obj);
         Color();
         ~Color();
@@ -21,10 +21,8 @@ class Color{
 
 class Interface{
     public:
-
-        virtual int open_window() = 0;
-
         virtual void drawBlock(int x, int y, Color c) = 0;
+        virtual void drawText(int x, int y, std::string const txt) = 0;
 
         virtual void prerender() = 0;
         virtual void postrender() = 0;
