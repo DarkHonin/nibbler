@@ -97,7 +97,7 @@ void GLFW::drawBlock(int x, int y, Color c){
     int vertexColorLocation = glGetUniformLocation(shader, "color");
     glUniform4f(vertexColorLocation, (float)(c.r / 255), (float)(c.g / 255), (float)(c.b / 255), 1.0f);
 
-    float XPos = (((x * _blockW) - .5f) / 0.5f) + _blockW;
+    float XPos = (((x * _blockW) - .5f) / .5f) + _blockW;
     float YPos = (((y * _blockH) - .5f) / .5f) + _blockH;
     int vertexPosLocation = glGetUniformLocation(shader, "pos");
     glUniform4f(vertexPosLocation, XPos, YPos, 0.0f, 0.0f);
@@ -108,7 +108,8 @@ void GLFW::drawBlock(int x, int y, Color c){
 }
 
 void GLFW::drawText(int x, int y, std::string text){
-    
+    float XPos = (((x * _blockW) - .5f) / .5f) + _blockW;
+    float YPos = (((y * _blockH) - .5f) / .5f) + _blockH;
 }
 
 bool GLFW::closing(){

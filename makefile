@@ -6,7 +6,7 @@ SFML=$(HOME)/nibbler/SFML-2.5.1-macos-clang
 echo = /bin/echo
 BUILD = $(realpath build.mk)
 
-DEPENDENCIES= $(SDL) $(GLFW) $(GLEW)
+DEPENDENCIES= $(CMAKE) $(SDL) $(GLFW) $(GLEW)
 
 DLLS=interface/sfml.interface.dll interface/sdl.interface.dll interface/glfw.interface.dll
 
@@ -38,6 +38,7 @@ $(DLLS):
 $(SFML):
 	@curl https://www.sfml-dev.org/files/SFML-2.5.1-macOS-clang.tar.gz -o SFML-2.5.1-macOS-clang.tar.gz
 	@tar -xf SFML-2.5.1-macOS-clang.tar.gz
+
 
 $(DEPENDENCIES): $(BREW)
 	@$(echo) "Installing brews: $(foreach dep,$(DEPENDENCIES), $(shell basename $(dir $(dir $(dep)))))"

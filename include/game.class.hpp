@@ -18,6 +18,10 @@
 
 class Game;
 
+enum GameState{
+    Start, Pause, Running, End
+};
+
 class GameMap{
     public:
         GameMap(int w, int h);
@@ -51,7 +55,16 @@ class GameObj{
     private:
         int posx;
         int posy;
-        bool placed;
+};
+
+class Tile{
+    public:
+        Tile(int x, int y);
+        Tile(Tile const & obj);
+        ~Tile();
+    
+        int x;
+        int y;
 };
 
 class Player : public GameObj{
@@ -64,9 +77,9 @@ class Player : public GameObj{
         void render(Interface & i);
         void place(GameMap const & map);
         
-    private:
-        std::vector<int *> blocks;
         int direction;
+    private:
+        std::vector<Tile> Tiles;
 };
 
 class Apple : public GameObj{
@@ -83,8 +96,8 @@ class Game{
         Game(Game & obj);
         ~Game();
 
-        void update();
-        void render();
+        void update(int delta);
+        void render(int delta);
 
         void loadDll(std::string const path = GLFW);
         void run();
@@ -92,9 +105,10 @@ class Game{
         GameMap map;
         Player player;
         Apple apple;
+        GameState state;
     private:
         void *interface;
-        Interface *interface_instance; 
+        Interface *interface_instance;
 };
 
 #endif
