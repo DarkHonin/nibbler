@@ -11,23 +11,26 @@ int GameObj::getY() const {return this->posy;};
 void GameObj::setX(int x){ posx = x; }
 void GameObj::setY(int y){ posy = y; }
 
-void GameObj::place(GameMap const & map){
+void GameObj::place(Game const & map){
     int x = std::min<int>(std::max<int>((rand() & map.getW()), 1), map.getW() - 2);
     int y = std::min<int>(std::max<int>((rand() & map.getH()), 1), map.getH() - 2);
     setX(x);
     setY(y);
 }
 
-Tile::Tile(int x, int y): x(x), y(y) {}
-Tile::Tile(Tile const & obj) : Tile(obj.x, obj.y){}
+Tile::Tile(int d): direction(d), c(0) {}
+Tile::Tile(Tile const & obj) : direction(obj.direction){}
 Tile::~Tile(){}
 
-Player::Player(){}
+
+Player::Player(): direction(-1){}
 Player::Player(Player const & e){}
 Player::~Player(){}
-void Player::update(GameMap & e){
-    int x = getX();
-    int y = getY();
+
+void Player::update(Game & e){
+    int x = 0, y = 0, X = getX(), Y = getY();
+
+    Tiles.front().direction = direction;
     switch(direction){
         case 0: // Up
             y++;
@@ -42,38 +45,54 @@ void Player::update(GameMap & e){
             x++;
             break;
     }
-    if(x < 1 || x > e.getW()-2 || y < 1 || y > e.getH() - 2){
-        printf("Dies here");
+    X += x;
+    Y += y;
+    if(X < 1 || X > e.getW()-2 || Y < 1 || Y > e.getH() - 2){
+        e.state = End;
         return;
     }
+    setX(X);
+    setY(Y);
     
-    Tile back = Tiles[Tiles.size()];
-    Tile Front = Tiles[0];
-    Tiles[0] = back;
-    Tiles[Tiles.size()] = Front;
-    Tiles[0].x = x;
-    Tiles[0].y = y;
-    setX(x);
-    setY(y);
+    Tile last = Tiles.back();
+    Tiles.pop_back();
+    last.direction = direction;
+    Tiles.push_front(last);
+
+    if(X == e.apple.getX() && Y == e.apple.getY()){
+        Tile nt = Tile(direction);
+        Tiles.push_back(nt);
+        e.apple.place(e);
+    }
 }
 
 void Player::render(Interface & i){
-    for(std::vector<Tile>::iterator q = Tiles.begin(); q != Tiles.end(); q++)
-        i.drawBlock((*q).x, (*q).y, Color(255,255,0));
+    int x = 0;
+    int y = 0;
+    for(std::list<Tile>::iterator q = Tiles.begin(); q != Tiles.end(); q++){
+        switch(q->direction){
+            case 0: y -= 1; break;
+            case 1: x += 1; break;
+            case 2: y += 1; break;
+            case 3: x -= 1; break;
+        }
+        i.drawBlock(getX() + x, getY() + y, Color(255,0,255));
+    }
+    i.drawBlock(getX(), getY(), Color(255,255,0));
 }
 
-void Player::place(GameMap const & map){
+void Player::place(Game const & map){
     int x = std::min<int>(std::max<int>((rand() & map.getW()), 3), map.getW() - 4);
     int y = std::min<int>(std::max<int>((rand() & map.getH()), 3), map.getH() - 4);
     setX(x);
     setY(y);
-    Tiles.push_back(Tile(x, y));
+    Tiles.push_front(Tile(direction));
 }
 
 void Apple::render(Interface & i){
     i.drawBlock(getX(), getY(), Color(255,0,0));
 }
 
-void Apple::update(GameMap & e){
+void Apple::update(Game & e){
 
 }

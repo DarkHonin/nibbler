@@ -6,7 +6,7 @@
 #include <string>
 #include <iostream>
 #include <dlfcn.h>
-#include <vector>
+#include <list>
 #include <cstdlib>
 #include <ctime>
 
@@ -22,20 +22,6 @@ enum GameState{
     Start, Pause, Running, End
 };
 
-class GameMap{
-    public:
-        GameMap(int w, int h);
-        GameMap(GameMap const & obj);
-        ~GameMap();
-
-        int getW() const;
-        int getH() const;
-
-    private:
-        int w;
-        int h;
-};
-
 class GameObj{
     public:
         GameObj();
@@ -46,9 +32,9 @@ class GameObj{
         int getY() const;
         void setX(int x);
         void setY(int y);
-        void place(GameMap const & map);
+        void place(Game const & map);
 
-        virtual void update(GameMap & map) = 0;
+        virtual void update(Game & map) = 0;
         virtual void render(Interface & i) = 0;
 
 
@@ -59,12 +45,12 @@ class GameObj{
 
 class Tile{
     public:
-        Tile(int x, int y);
+        Tile(int d);
         Tile(Tile const & obj);
         ~Tile();
-    
-        int x;
-        int y;
+
+        int direction;
+        int c;
 };
 
 class Player : public GameObj{
@@ -73,18 +59,18 @@ class Player : public GameObj{
         Player(Player const & e);
         ~Player();
 
-        void update(GameMap & map);
+        void update(Game & map);
         void render(Interface & i);
-        void place(GameMap const & map);
+        void place(Game const & map);
         
         int direction;
     private:
-        std::vector<Tile> Tiles;
+        std::list<Tile> Tiles;
 };
 
 class Apple : public GameObj{
     public:
-        void update(GameMap & map);
+        void update(Game & map);
         void render(Interface & i);
 };
 
@@ -101,14 +87,18 @@ class Game{
 
         void loadDll(std::string const path = GLFW);
         void run();
+
+        int getW() const;
+        int getH() const;
         
-        GameMap map;
         Player player;
         Apple apple;
         GameState state;
     private:
         void *interface;
         Interface *interface_instance;
+        int w;
+        int h;
 };
 
 #endif
