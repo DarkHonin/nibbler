@@ -15,12 +15,16 @@ Game::Game(int x, int h) : w(x), h(h), state(Start){
 Game::Game(Game & obj) : interface(obj.interface), interface_instance(obj.interface_instance), w(obj.w), h(obj.h){}
 Game::~Game(){}
 
+bool inputLock = false;
+
 void Game::update(int d){
     switch(state){
         case Start:
             break;
         case Running:
+            inputLock = false;
             player.update(*this);
+            break;
     }
 }
 void Game::render(int d){
@@ -66,27 +70,40 @@ void Game::loadDll(std::string const define){
 
 void handleKey(int key, int scancode, int mods){
     std::cout << "Char: "<< (char)key << "\tkey: " << key << "\tscancode: " << scancode << "\tmod: " << mods << std::endl;
+    if((char)key == '1'){
+        instance->loadDll("GLFW");
+        instance->state = Pause;
+    };
     switch(instance->state){
         case Start:
             if((char)key == 'W' || (char)key == 'A' || (char)key == 'S' || (char)key == 'D')
                 instance->state = Running;
+        case Pause:
+            if((char)key == ' ') {instance->state = Running; return;}
         case Running:
             switch((char)key){
+                case ' ':
+                    instance->state = Pause;
+                    break;
                 case 'W':
-                    if(instance->player.direction != 2)
+                    if(instance->player.direction != 2 && !inputLock)
                         instance->player.direction = 0;
+                    inputLock = true;
                     break;
                 case 'A':
-                    if(instance->player.direction != 3)
+                    if(instance->player.direction != 3 && !inputLock)
                         instance->player.direction = 1;
+                    inputLock = true;
                     break;
                 case 'S':
-                    if(instance->player.direction != 0)
+                    if(instance->player.direction != 0 && !inputLock)
                         instance->player.direction = 2;
+                    inputLock = true;
                     break;
                 case 'D':
-                    if(instance->player.direction != 1)
+                    if(instance->player.direction != 1 && !inputLock)
                         instance->player.direction = 3;
+                    inputLock = true;
                     break;
             }
     }
@@ -104,7 +121,7 @@ void Game::run(){
 
     while(!this->interface_instance->closing()){
         d += (double)clock() - start;
-        if(d >= 100000000){
+        if(d >= 100000000 - (player.getScore() * 10000000)){
             this->update(d);
             d = 0;
             start = clock();

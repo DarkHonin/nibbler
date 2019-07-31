@@ -26,6 +26,7 @@ class GameObj{
     public:
         GameObj();
         GameObj(GameObj const & obj);
+        GameObj(int x, int y);
         ~GameObj();
 
         int getX() const;
@@ -43,14 +44,12 @@ class GameObj{
         int posy;
 };
 
-class Tile{
+class Tile : public GameObj{
     public:
-        Tile(int d);
-        Tile(Tile const & obj);
-        ~Tile();
+        Tile(int x, int y);
+        void update(Game & map);
+        void render(Interface & i);
 
-        int direction;
-        int c;
 };
 
 class Player : public GameObj{
@@ -62,6 +61,7 @@ class Player : public GameObj{
         void update(Game & map);
         void render(Interface & i);
         void place(Game const & map);
+        int getScore();
         
         int direction;
     private:

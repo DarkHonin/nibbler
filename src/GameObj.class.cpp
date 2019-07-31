@@ -2,6 +2,7 @@
 #include <ranlib.h>
 
 GameObj::GameObj() : posx(0), posy(0){} 
+GameObj::GameObj(int x, int y) : posx(x), posy(y){} 
 GameObj::~GameObj(){} 
 GameObj::GameObj(GameObj const & obj) : posx(obj.posx), posy(obj.posy) {} 
 
@@ -18,9 +19,14 @@ void GameObj::place(Game const & map){
     setY(y);
 }
 
-Tile::Tile(int d): direction(d), c(0) {}
-Tile::Tile(Tile const & obj) : direction(obj.direction){}
-Tile::~Tile(){}
+Tile::Tile(int x, int y): GameObj(x, y){};
+
+void Tile::update(Game & map){
+
+}
+void Tile::render(Interface & i){
+
+}
 
 
 Player::Player(): direction(-1){}
@@ -30,7 +36,6 @@ Player::~Player(){}
 void Player::update(Game & e){
     int x = 0, y = 0, X = getX(), Y = getY();
 
-    Tiles.front().direction = direction;
     switch(direction){
         case 0: // Up
             y++;
@@ -49,36 +54,33 @@ void Player::update(Game & e){
     Y += y;
     if(X < 1 || X > e.getW()-2 || Y < 1 || Y > e.getH() - 2){
         e.state = End;
+        printf("Player hit wall\n");
         return;
     }
+    for(std::list<Tile>::iterator I = Tiles.begin(); I != Tiles.end(); I++)
+        if(I->getX() == X && I->getY() == Y){
+            e.state = End;
+            printf("Player hit self\n");
+            return;
+        } 
     setX(X);
     setY(Y);
-    
-    Tile last = Tiles.back();
-    Tiles.pop_back();
-    last.direction = direction;
-    Tiles.push_front(last);
 
     if(X == e.apple.getX() && Y == e.apple.getY()){
-        Tile nt = Tile(direction);
-        Tiles.push_back(nt);
+        Tiles.push_front(Tile(X, Y));
         e.apple.place(e);
+        printf("Player got apple\n");
     }
+    Tile tile = Tiles.back();
+    Tiles.pop_back();
+    tile.setX(X);
+    tile.setY(Y);
+    Tiles.push_front(tile);
 }
 
 void Player::render(Interface & i){
-    int x = 0;
-    int y = 0;
-    for(std::list<Tile>::iterator q = Tiles.begin(); q != Tiles.end(); q++){
-        switch(q->direction){
-            case 0: y -= 1; break;
-            case 1: x += 1; break;
-            case 2: y += 1; break;
-            case 3: x -= 1; break;
-        }
-        i.drawBlock(getX() + x, getY() + y, Color(255,0,255));
-    }
-    i.drawBlock(getX(), getY(), Color(255,255,0));
+    for(std::list<Tile>::iterator q = Tiles.begin(); q != Tiles.end(); q++)
+        i.drawBlock(q->getX(), q->getY(), Color(0,0,255));
 }
 
 void Player::place(Game const & map){
@@ -86,7 +88,11 @@ void Player::place(Game const & map){
     int y = std::min<int>(std::max<int>((rand() & map.getH()), 3), map.getH() - 4);
     setX(x);
     setY(y);
-    Tiles.push_front(Tile(direction));
+    Tiles.push_front(Tile(x, y));
+}
+
+int Player::getScore(){
+    return Tiles.size() - 1;
 }
 
 void Apple::render(Interface & i){

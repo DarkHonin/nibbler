@@ -21,6 +21,7 @@ export INCLUDE_PATHS
 
 include $(BUILD)
 
+
 $(NAME): $(DEPENDENCIES) $(SFML) $(DLLS)
 	@$(echo) "Building $(NAME)"
 	$(GCC) $(OBJ) $(INCLUDE) -o $(NAME) -ldl
@@ -36,18 +37,17 @@ $(DLLS):
 	@$(make) -C interface BUILD=$(BUILD) SDL=$(SDL) GLFW=$(GLFW) SFML=$(SFML) GLEW=$(GLEW)
 
 $(SFML):
-	@curl https://www.sfml-dev.org/files/SFML-2.5.1-macOS-clang.tar.gz -o SFML-2.5.1-macOS-clang.tar.gz
-	@tar -xf SFML-2.5.1-macOS-clang.tar.gz
-
+	@/usr/bin/curl https://www.sfml-dev.org/files/SFML-2.5.1-macOS-clang.tar.gz -o SFML-2.5.1-macOS-clang.tar.gz
+	@/usr/bin/tar -xf SFML-2.5.1-macOS-clang.tar.gz
 
 $(DEPENDENCIES): $(BREW)
 	@$(echo) "Installing brews: $(foreach dep,$(DEPENDENCIES), $(shell basename $(dir $(dir $(dep)))))"
-	@brew install $(foreach dep,$(DEPENDENCIES), $(shell basename $(dir $(dir $(dep)))))
+	@$(BREW) install $(foreach dep,$(DEPENDENCIES), $(shell basename $(dir $(dir $(dep)))))
 
 $(BREW):
-	@sh -c "$$(curl -fsSL https://raw.githubusercontent.com/wethinkcode/homebrew/master/install.sh)"
+	@/bin/sh -c "$$(/usr/bin/curl -fsSL https://raw.githubusercontent.com/wethinkcode/homebrew/master/install.sh)"
 
 dep_clear:
 	@$(echo) "Cleaning all brews"
-	@brew uninstall $(foreach dep,$(DEPENDENCIES), $(shell basename $(dir $(dir $(dep)))))
-	@rm -rf SFML-2.5.1-macOS-clang.tar.gz SFML-2.5.1-macos-clang
+	@$(BREW) uninstall $(foreach dep,$(DEPENDENCIES), $(shell basename $(dir $(dir $(dep)))))
+	@/bin/rm -rf SFML-2.5.1-macOS-clang.tar.gz SFML-2.5.1-macos-clang
