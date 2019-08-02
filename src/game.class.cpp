@@ -54,7 +54,11 @@ void Game::render(int d){
 void Game::loadDll(std::string const define){
     char *err;
 
-    if(this->interface) dlclose(this->interface);
+    if(this->interface){
+        printf("Unloading current dll\n");
+        delete interface_instance;
+        dlclose(this->interface);
+    };
     this->interface = dlopen(this->DLLS[define].c_str(), RTLD_NOW | RTLD_GLOBAL);
     err = dlerror();
     if(err) std::cout << err << std::endl;
@@ -67,8 +71,14 @@ void Game::loadDll(std::string const define){
 void handleKey(int key, int scancode, int mods){
     std::cout << "Char: "<< (char)key << "\tkey: " << key << "\tscancode: " << scancode << "\tmod: " << mods << std::endl;
     if((char)key == '1'){
-        instance->loadDll("GLFW");
+        instance->loadDll(GLFW);
         instance->state = Pause;
+        return;
+    };
+    if((char)key == '2'){
+        instance->loadDll(SDL);
+        instance->state = Pause;
+        return;
     };
     switch(instance->state){
         case Start:

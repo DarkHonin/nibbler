@@ -27,11 +27,11 @@ SDL::~SDL(){
 
 void SDL::drawBlock(int x, int y, Color c){
     SDL_Rect *r = new SDL_Rect();
-    r->x = x * _blockSize;
-    r->y = y * _blockSize;
-    r->w = _blockSize;
-    r->h = _blockSize;
-    SDL_FillRect(_drawSurface, {}, (c.r << 4) & (c.g << 2) & c.b);
+    r->x = (x * _blockSize) + 2;
+    r->y = ((_yBlocks - y - 1) * _blockSize) + 2;
+    r->w = _blockSize - 4;
+    r->h = _blockSize - 4;
+    SDL_FillRect( this->_drawSurface, r, SDL_MapRGB( this->_drawSurface->format, c.r, c.g, c.b) );
     delete r;
 }
 void SDL::drawText(int x, int y, std::string const txt){
@@ -82,7 +82,6 @@ void PollEvents(){
 void SDL::postrender(){
     SDL_UpdateWindowSurface( this->_window );
     PollEvents();
-    SDL_Delay(200);
 }
 
 void SDL::bindKeyCallback( const key_callback hook){
