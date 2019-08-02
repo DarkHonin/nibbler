@@ -24,6 +24,7 @@ GLFW::GLFW(int w, int h, int b): _xBlocks(w), _yBlocks(h), _blockSize(b){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    //glfwWindowHint(GLFW_STICKY_KEYS, GL_TRUE);
     glfwSetErrorCallback([](int code, const char *message) {std::cout << "GLFW Error " << code << ": "<< message << std::endl;});
     
     this->_window = glfwCreateWindow(_xBlocks * _blockSize, _yBlocks * _blockSize, this->getName().c_str(), NULL, NULL);

@@ -6,7 +6,7 @@ PATHS=$(realpath sfml sdl glfw)
 echo = /bin/echo
 make=/usr/bin/make
 
-DLLS = $(GLFW_DLL) #$(SDL_DLL) # $(SFML_DLL) 
+DLLS = $(GLFW_DLL) $(SDL_DLL) # $(SFML_DLL) 
 
 make: $(DLLS)
 

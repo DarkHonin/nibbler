@@ -37,6 +37,7 @@ class GameObj{
 
         virtual void update(Game & map) = 0;
         virtual void render(Interface & i) = 0;
+        void handleKey(int key);
 
 
     private:
@@ -49,7 +50,6 @@ class Tile : public GameObj{
         Tile(int x, int y);
         void update(Game & map);
         void render(Interface & i);
-
 };
 
 class Player : public GameObj{
@@ -61,11 +61,13 @@ class Player : public GameObj{
         void update(Game & map);
         void render(Interface & i);
         void place(Game const & map);
+        void handleKey(int key);
         int getScore();
         
-        int direction;
     private:
         std::list<Tile> Tiles;
+        bool DirChanged;
+        int direction;
 };
 
 class Apple : public GameObj{

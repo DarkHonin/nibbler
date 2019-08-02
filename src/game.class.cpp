@@ -18,13 +18,9 @@ Game::~Game(){}
 bool inputLock = false;
 
 void Game::update(int d){
-    switch(state){
-        case Start:
-            break;
-        case Running:
-            inputLock = false;
-            player.update(*this);
-            break;
+    if(state == Running){
+        inputLock = false;
+        player.update(*this);
     }
 }
 void Game::render(int d){
@@ -76,41 +72,25 @@ void handleKey(int key, int scancode, int mods){
     };
     switch(instance->state){
         case Start:
-            if((char)key == 'W' || (char)key == 'A' || (char)key == 'S' || (char)key == 'D')
+            if((char)key == 'W' || (char)key == 'A' || (char)key == 'S' || (char)key == 'D'){
                 instance->state = Running;
-        case Pause:
-            if((char)key == ' ') {instance->state = Running; return;}
-        case Running:
-            switch((char)key){
-                case ' ':
-                    instance->state = Pause;
-                    break;
-                case 'W':
-                    if(instance->player.direction != 2 && !inputLock)
-                        instance->player.direction = 0;
-                    inputLock = true;
-                    break;
-                case 'A':
-                    if(instance->player.direction != 3 && !inputLock)
-                        instance->player.direction = 1;
-                    inputLock = true;
-                    break;
-                case 'S':
-                    if(instance->player.direction != 0 && !inputLock)
-                        instance->player.direction = 2;
-                    inputLock = true;
-                    break;
-                case 'D':
-                    if(instance->player.direction != 1 && !inputLock)
-                        instance->player.direction = 3;
-                    inputLock = true;
-                    break;
+                instance->player.handleKey(key);
+                printf("Game starting\n");
             }
+        case Pause:
+            if(key == 'R')
+                instance->state = Running;
+            break;
+        case Running:
+            if(key == ' ')
+                instance->state = Pause;
+            else
+                instance->player.handleKey(key);
     }
 }
 
 void Game::run(){
-    this->loadDll();
+    this->loadDll(SDL);
 
     std::cout << "Loaded dll: " << this->interface_instance->getName() << std::endl;
     

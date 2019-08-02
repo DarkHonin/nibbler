@@ -8,26 +8,32 @@ class SDL : public Interface{
     public:
         static key_callback keyHook;
 
-        SDL();
+        SDL(int blockx, int blocky, int blocksize);
         SDL(SDL const & obj);
         ~SDL();
 
-        int open_window(int width, int height);
-        void drawBorder();
-        void updateView();
+        void drawBlock(int x, int y, Color c);
+        void drawText(int x, int y, std::string const txt);
 
-        void bindKeyCallback( const key_callback);
+        void prerender();
+        void postrender();
+
+        void bindKeyCallback(const key_callback);
         bool closing();
 
         std::string getName();
     private:
         SDL_Window *_window;
         SDL_Surface *_drawSurface;
+
+        int _xBlocks;
+        int _yBlocks;
+        int _blockSize;
 };
 
 extern "C"{
-    Interface * Interface_Init(){
-        return new SDL();
+    Interface * Interface_Init(int w, int h, int b){
+        return new SDL(w, h, b);
     }
 }
 

@@ -28,7 +28,6 @@ class GLFW : public Interface{
         std::string getName();
     private:
         GLFWwindow *_window;
-        key_callback onKey;
 
         int _xBlocks;
         int _yBlocks;

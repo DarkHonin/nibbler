@@ -19,6 +19,8 @@ void GameObj::place(Game const & map){
     setY(y);
 }
 
+void GameObj::handleKey(int key) {}
+
 Tile::Tile(int x, int y): GameObj(x, y){};
 
 void Tile::update(Game & map){
@@ -29,9 +31,31 @@ void Tile::render(Interface & i){
 }
 
 
-Player::Player(): direction(-1){}
+Player::Player(): direction(-1), DirChanged(false){}
 Player::Player(Player const & e){}
 Player::~Player(){}
+
+void Player::handleKey(int key) {
+    if(DirChanged) return;
+    switch((char) key){
+        case 'W':
+            if(direction != 2) direction = 0;
+            DirChanged = true;
+            break;
+        case 'A':
+            if(direction != 3) direction = 1;
+            DirChanged = true;
+            break;
+        case 'S':
+            if(direction != 0) direction = 2;
+            DirChanged = true;
+            break;
+        case 'D':
+            if(direction != 1) direction = 3;
+            DirChanged = true;
+            break;
+    }
+}
 
 void Player::update(Game & e){
     int x = 0, y = 0, X = getX(), Y = getY();
@@ -76,6 +100,7 @@ void Player::update(Game & e){
     tile.setX(X);
     tile.setY(Y);
     Tiles.push_front(tile);
+    DirChanged = false;
 }
 
 void Player::render(Interface & i){
