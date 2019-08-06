@@ -25,6 +25,8 @@ class GLFW : public Interface{
         void bindKeyCallback(const key_callback);
         bool closing();
 
+        void close();
+
         std::string getName();
     private:
         GLFWwindow *_window;

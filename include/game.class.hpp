@@ -62,6 +62,7 @@ class Player : public GameObj{
         void render(Interface & i);
         void place(Game const & map);
         void handleKey(int key);
+        void reset(Game const & map);
         int getScore();
         
     private:

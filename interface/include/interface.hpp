@@ -30,6 +30,9 @@ class Interface{
         virtual void bindKeyCallback(const key_callback) = 0;
         virtual bool closing() = 0;
 
+        virtual void close() = 0;
+        
+
         virtual std::string getName() = 0;
 };
 

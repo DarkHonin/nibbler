@@ -82,14 +82,13 @@ GLFW::GLFW(int w, int h, int b): _xBlocks(w), _yBlocks(h), _blockSize(b){
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
     std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
     glfwSetKeyCallback(_window, &key);
+    std::cout << "Init of GLFW compleat" << std::endl;
 }
 
 GLFW::GLFW(GLFW const & obj) :  _xBlocks(obj._xBlocks), _yBlocks(obj._yBlocks), _blockSize(obj._blockSize),_window(obj._window){}
 
 GLFW::~GLFW(){
-    if(this->_window)
-        glfwDestroyWindow(this->_window);
-    glfwTerminate();
+  
 }
 
 void GLFW::drawBlock(int x, int y, Color c){
@@ -115,6 +114,14 @@ void GLFW::drawText(int x, int y, std::string text){
 
 bool GLFW::closing(){
     return glfwWindowShouldClose(this->_window);
+}
+
+void GLFW::close(){
+printf("Closing sdl window\n");
+      if(this->_window)
+        glfwDestroyWindow(this->_window);
+    glfwTerminate();
+    printf("SDL window closed\n");
 }
 
 void GLFW::bindKeyCallback(key_callback const key){ key_call = key; }

@@ -20,6 +20,7 @@ class SDL : public Interface{
 
         void bindKeyCallback(const key_callback);
         bool closing();
+        void close();
 
         std::string getName();
     private:
@@ -33,6 +34,7 @@ class SDL : public Interface{
 
 extern "C"{
     Interface * Interface_Init(int w, int h, int b){
+        printf("Creating new sdl instance\n");
         return new SDL(w, h, b);
     }
 }

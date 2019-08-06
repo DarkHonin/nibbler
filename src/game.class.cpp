@@ -43,7 +43,8 @@ void Game::render(int d){
     case Start:
         interface_instance->drawText(1, 1, "Press w,a,s or d to start");
         break;
-    
+    case End:
+        interface_instance->drawText(1, 1, "You died, Score: " + std::to_string(player.getScore()));
     default:
         break;
     }
@@ -56,15 +57,18 @@ void Game::loadDll(std::string const define){
 
     if(this->interface){
         printf("Unloading current dll\n");
-        delete interface_instance;
+        interface_instance->close();
         dlclose(this->interface);
+        printf("Closed dll\n");
     };
     this->interface = dlopen(this->DLLS[define].c_str(), RTLD_NOW | RTLD_GLOBAL);
     err = dlerror();
     if(err) std::cout << err << std::endl;
+    else printf("DLL opened\n");
     InterfaceInit init = (InterfaceInit)dlsym(this->interface, "Interface_Init");
     err = dlerror();
     if(err) std::cout << err << std::endl;
+    else printf("Entrypoint allocated\n");
     this->interface_instance = init(getW(), getH(), BLOCK);
 }
 
@@ -96,6 +100,13 @@ void handleKey(int key, int scancode, int mods){
                 instance->state = Pause;
             else
                 instance->player.handleKey(key);
+        case End:
+            if(key == ' '){
+                instance->player.reset(*instance);
+                instance->player.place(*instance);
+                instance->apple.place(*instance);
+                instance->state = Start;
+            }
     }
 }
 
@@ -113,6 +124,7 @@ void Game::run(){
         d += (double)clock() - start;
         if(d >= 100000000 - (player.getScore() * 10000000)){
             this->update(d);
+
             d = 0;
             start = clock();
         }

@@ -116,6 +116,10 @@ void Player::place(Game const & map){
     Tiles.push_front(Tile(x, y));
 }
 
+void Player::reset(Game const & map){
+    Tiles.clear();
+}
+
 int Player::getScore(){
     return Tiles.size() - 1;
 }
