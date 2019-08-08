@@ -26,7 +26,7 @@ info:
 
 $(OBJ_PATH)/%.o : $(PATH)/src/%.cpp
 	@$(echo) "$@ >> $< "
-	@$(GCC) $< -o $@ $(INCLUDE) -c $(FLAGS)
+	$(GCC) $< -o $@ $(INCLUDE) -c $(FLAGS)
 
 $(OBJ_PATH):
 	@/bin/mkdir $(OBJ_PATH)
