@@ -1,16 +1,14 @@
-#ifndef SDL_INTERFACE_H
-#define SDL_INTERFACE_H
+#ifndef NCUR_INTERFACE_H
+#define NCUR_INTERFACE_H
 
 #include "interface.hpp"
-#include <SDL2/SDL.h>
+#include <ncurses.h>
 
-class SDL : public Interface{
+class NCUR : public Interface{
     public:
-        static key_callback keyHook;
-
-        SDL(int blockx, int blocky, int blocksize);
-        SDL(SDL const & obj);
-        ~SDL();
+        NCUR(int x, int y, int b);
+        NCUR(NCUR const & obj);
+        ~NCUR();
 
         void drawBlock(int x, int y, Color c);
         void drawText(int x, int y, std::string const txt);
@@ -20,23 +18,19 @@ class SDL : public Interface{
 
         void bindKeyCallback(const key_callback);
         bool closing();
+
         void close();
         void pollEvents();
-
         std::string getName();
     private:
-        SDL_Window *_window;
-        SDL_Surface *_drawSurface;
-
-        int _xBlocks;
-        int _yBlocks;
-        int _blockSize;
+        int x;
+        int y;
+        int b;
 };
 
 extern "C"{
     Interface * Interface_Init(int w, int h, int b){
-        printf("Creating new sdl instance\n");
-        return new SDL(w, h, b);
+        return new NCUR(w, h, b);
     }
 }
 

@@ -12,14 +12,14 @@
 
 #define SDL "SDL"
 #define GLFW "GLFW"
-#define SFML "SFML"
+#define NCUR "NCUR"
 
 #define BLOCK 15
 
 class Game;
 
 enum GameState{
-    Start, Pause, Running, End
+    Start, Pause, Running, End, Switching
 };
 
 class GameObj{
@@ -34,6 +34,7 @@ class GameObj{
         void setX(int x);
         void setY(int y);
         void place(Game const & map);
+        
 
         virtual void update(Game & map) = 0;
         virtual void render(Interface & i) = 0;
@@ -45,11 +46,15 @@ class GameObj{
         int posy;
 };
 
-class Tile : public GameObj{
+class Tile{
     public:
         Tile(int x, int y);
+        ~Tile();
         void update(Game & map);
         void render(Interface & i);
+        int x;
+        int y;
+    private:
 };
 
 class Player : public GameObj{
@@ -85,14 +90,15 @@ class Game{
         Game(Game & obj);
         ~Game();
 
-        void update(int delta);
-        void render(int delta);
+        void update();
+        void render();
 
         void loadDll(std::string const path = GLFW);
         void run();
 
         int getW() const;
         int getH() const;
+        void doNoting();
         
         Player player;
         Apple apple;

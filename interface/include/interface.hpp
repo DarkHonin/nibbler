@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 
+#define IGNORE(x) x == x
+
 class InterfaceException : public std::exception{};
 
 typedef void (*key_callback)(int key, int scancode, int mods);
@@ -31,6 +33,7 @@ class Interface{
         virtual bool closing() = 0;
 
         virtual void close() = 0;
+        virtual void pollEvents() = 0;
         
 
         virtual std::string getName() = 0;

@@ -3,11 +3,15 @@
 
 GLuint LoadShaders(const char* vertShaderPath, const char* fragShaderPath);
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) { glViewport(0, 0, width, height); }  
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+     glViewport(0, 0, width, height); 
+     IGNORE(window);
+     }  
 
 key_callback key_call = 0;
 
 void key(GLFWwindow *e, int a, int b, int c, int d){
+    IGNORE(d);
     if(key_call)
         key_call(a, b, c);
     if(a == GLFW_KEY_ESCAPE)
@@ -85,7 +89,7 @@ GLFW::GLFW(int w, int h, int b): _xBlocks(w), _yBlocks(h), _blockSize(b){
     std::cout << "Init of GLFW compleat" << std::endl;
 }
 
-GLFW::GLFW(GLFW const & obj) :  _xBlocks(obj._xBlocks), _yBlocks(obj._yBlocks), _blockSize(obj._blockSize),_window(obj._window){}
+GLFW::GLFW(GLFW const & obj) :  GLFW(obj._xBlocks, obj._yBlocks, obj._blockSize){}
 
 GLFW::~GLFW(){
   
@@ -108,8 +112,9 @@ void GLFW::drawBlock(int x, int y, Color c){
 }
 
 void GLFW::drawText(int x, int y, std::string text){
-    float XPos = (((x * _blockW) - .5f) / .5f) + _blockW;
-    float YPos = (((y * _blockH) - .5f) / .5f) + _blockH;
+    if(x == y){
+        text.c_str();
+    }
 }
 
 bool GLFW::closing(){
@@ -132,6 +137,9 @@ void GLFW::prerender(){
 
 void GLFW::postrender(){
     glfwSwapBuffers(_window);
+}
+
+void GLFW::pollEvents(){
     glfwPollEvents();
 }
 

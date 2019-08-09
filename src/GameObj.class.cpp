@@ -19,25 +19,29 @@ void GameObj::place(Game const & map){
     setY(y);
 }
 
-void GameObj::handleKey(int key) {}
+void GameObj::handleKey(int key) {
+    if(key){}
+}
 
-Tile::Tile(int x, int y): GameObj(x, y){};
+Tile::Tile(int x, int y): x(x), y(y){};
+Tile::~Tile(){}
 
 void Tile::update(Game & map){
-
+    map.doNoting();
 }
 void Tile::render(Interface & i){
-
+    i.drawBlock(x, y, Color(0,0,255));
 }
 
 
-Player::Player(): direction(-1), DirChanged(false){}
-Player::Player(Player const & e){}
+Player::Player():  DirChanged(false), direction(-1){}
+Player::Player(Player const & e) : DirChanged(e.DirChanged), direction(e.direction){}
 Player::~Player(){}
 
 void Player::handleKey(int key) {
     if(DirChanged) return;
-    switch((char) key){
+    char ch = toupper(key);
+    switch(ch){
         case 'W':
             if(direction != 2) direction = 0;
             DirChanged = true;
@@ -82,7 +86,7 @@ void Player::update(Game & e){
         return;
     }
     for(std::list<Tile>::iterator I = Tiles.begin(); I != Tiles.end(); I++)
-        if(I->getX() == X && I->getY() == Y){
+        if(I->x == X && I->y == Y && I != Tiles.begin()){
             e.state = End;
             printf("Player hit self\n");
             return;
@@ -97,15 +101,16 @@ void Player::update(Game & e){
     }
     Tile tile = Tiles.back();
     Tiles.pop_back();
-    tile.setX(X);
-    tile.setY(Y);
+    tile.x = X;
+    tile.y = Y;
     Tiles.push_front(tile);
     DirChanged = false;
 }
 
 void Player::render(Interface & i){
     for(std::list<Tile>::iterator q = Tiles.begin(); q != Tiles.end(); q++)
-        i.drawBlock(q->getX(), q->getY(), Color(0,0,255));
+        q->render(i);
+    i.drawText(20,20, "("+ std::to_string(getX()) + ";" + std::to_string(getY()) + ")" + std::to_string(direction));
 }
 
 void Player::place(Game const & map){
@@ -118,6 +123,7 @@ void Player::place(Game const & map){
 
 void Player::reset(Game const & map){
     Tiles.clear();
+    place(map);
 }
 
 int Player::getScore(){
@@ -129,5 +135,5 @@ void Apple::render(Interface & i){
 }
 
 void Apple::update(Game & e){
-
+    e.doNoting();
 }

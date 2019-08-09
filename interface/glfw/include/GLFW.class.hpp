@@ -26,6 +26,7 @@ class GLFW : public Interface{
         bool closing();
 
         void close();
+        void pollEvents();
 
         std::string getName();
     private:

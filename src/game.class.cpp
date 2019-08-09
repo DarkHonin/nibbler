@@ -2,11 +2,12 @@
 #include <time.h>
 
 static Game *instance;
+std::string DLL = SDL;
 
-Game::Game(int x, int h) : w(x), h(h), state(Start){
+Game::Game(int x, int h) : state(Start), w(x), h(h) {
     this->DLLS[SDL] = "interface/sdl.interface.dll";
     this->DLLS[GLFW] = "interface/glfw.interface.dll";
-    this->DLLS[SFML] = "interface/sfml.interface.dll";
+    this->DLLS[NCUR] = "interface/ncur.interface.dll";
     apple.place(*this);
     player.place(*this);
     instance = this;
@@ -17,13 +18,15 @@ Game::~Game(){}
 
 bool inputLock = false;
 
-void Game::update(int d){
+void Game::update(){
     if(state == Running){
         inputLock = false;
         player.update(*this);
+        
     }
 }
-void Game::render(int d){
+
+void Game::render(){
     interface_instance->prerender();
     
     for(int c = 0; c < getW(); c++){
@@ -38,6 +41,8 @@ void Game::render(int d){
     apple.render(*this->interface_instance);
     player.render(*this->interface_instance);
 
+    
+
     switch (state)
     {
     case Start:
@@ -45,6 +50,10 @@ void Game::render(int d){
         break;
     case End:
         interface_instance->drawText(1, 1, "You died, Score: " + std::to_string(player.getScore()));
+        break;
+    case Pause:
+        interface_instance->drawText(1, 1, "Paused press R to resume");
+        break;
     default:
         break;
     }
@@ -52,6 +61,55 @@ void Game::render(int d){
     interface_instance->postrender();
 }
 
+void Game::doNoting(){
+
+}
+
+void handleKey(int key, int scancode, int mods){
+    char rc = (toupper(key));
+    std::cout << "Char: "<< rc << "\tkey: " << key << "\tscancode: " << scancode << "\tmod: " << mods << std::endl;
+    if(rc== '1' && DLL != GLFW){
+        DLL = GLFW;
+        instance->state = Switching;
+        return;
+    };
+    if(rc== '2' && DLL != SDL){
+        DLL = SDL;
+        instance->state = Switching;
+        return;
+    };
+     if(rc== '3'&& DLL != NCUR){
+        DLL = NCUR;
+        instance->state = Switching;
+        return;
+    };
+    switch(instance->state){
+        case Start:
+            if(rc== 'W' || rc== 'A' || rc== 'S' || rc== 'D'){
+                instance->state = Running;
+                instance->player.handleKey(key);
+                printf("Game starting\n");
+            }
+        case Pause:
+            if(rc== 'R')
+                instance->state = Running;
+            break;
+        case Running:
+            if(rc== ' ')
+                instance->state = Pause;
+            else
+                instance->player.handleKey(key);
+            break;
+        case End:
+            if(rc== ' '){
+                instance->player.reset(*instance);
+                instance->apple.place(*instance);
+                instance->state = Start;
+            }
+            break;
+        case Switching: break;
+    }
+}
 void Game::loadDll(std::string const define){
     char *err;
 
@@ -70,65 +128,37 @@ void Game::loadDll(std::string const define){
     if(err) std::cout << err << std::endl;
     else printf("Entrypoint allocated\n");
     this->interface_instance = init(getW(), getH(), BLOCK);
+    this->interface_instance->bindKeyCallback(handleKey);
 }
 
-void handleKey(int key, int scancode, int mods){
-    std::cout << "Char: "<< (char)key << "\tkey: " << key << "\tscancode: " << scancode << "\tmod: " << mods << std::endl;
-    if((char)key == '1'){
-        instance->loadDll(GLFW);
-        instance->state = Pause;
-        return;
-    };
-    if((char)key == '2'){
-        instance->loadDll(SDL);
-        instance->state = Pause;
-        return;
-    };
-    switch(instance->state){
-        case Start:
-            if((char)key == 'W' || (char)key == 'A' || (char)key == 'S' || (char)key == 'D'){
-                instance->state = Running;
-                instance->player.handleKey(key);
-                printf("Game starting\n");
-            }
-        case Pause:
-            if(key == 'R')
-                instance->state = Running;
-            break;
-        case Running:
-            if(key == ' ')
-                instance->state = Pause;
-            else
-                instance->player.handleKey(key);
-        case End:
-            if(key == ' '){
-                instance->player.reset(*instance);
-                instance->player.place(*instance);
-                instance->apple.place(*instance);
-                instance->state = Start;
-            }
-    }
-}
 
 void Game::run(){
-    this->loadDll(SDL);
+    while(true){
+        this->loadDll(DLL);
 
-    std::cout << "Loaded dll: " << this->interface_instance->getName() << std::endl;
-    
-    this->interface_instance->bindKeyCallback(handleKey);
+        std::cout << "Loaded dll: " << this->interface_instance->getName() << std::endl;
+        
+        clock_t start = clock();
+        int d = 0;
+        
+        while(true){
 
-    clock_t start = clock();
-    int d = 0;
+            d += (double)clock() - start;
+            if(d >= 100000000 - (player.getScore() * 10000000)){
+                this->update();
 
-    while(!this->interface_instance->closing()){
-        d += (double)clock() - start;
-        if(d >= 100000000 - (player.getScore() * 10000000)){
-            this->update(d);
-
-            d = 0;
-            start = clock();
+                d = 0;
+                start = clock();
+            }
+            this->render();
+            interface_instance->pollEvents();
+            if(state == Switching)
+                break;
+            if(this->interface_instance->closing())
+                return;
         }
-        this->render(d);
+        if(state == Switching)
+            state = Pause;
     }
 
 }

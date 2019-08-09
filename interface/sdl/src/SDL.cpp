@@ -13,7 +13,7 @@ SDL::SDL(int w, int h, int b) : _xBlocks(w), _yBlocks(h), _blockSize(b){
     this->_window = SDL_CreateWindow(this->getName().c_str(), 
                                         SDL_WINDOWPOS_UNDEFINED, 
                                         SDL_WINDOWPOS_UNDEFINED, 
-                                        w * b, h * b, 
+                                        _xBlocks * _blockSize, _yBlocks * _blockSize, 
                                         SDL_WINDOW_SHOWN);
 
     if(!this->_window)
@@ -21,6 +21,7 @@ SDL::SDL(int w, int h, int b) : _xBlocks(w), _yBlocks(h), _blockSize(b){
     else
         printf("SDL window created\n");
     this->_drawSurface = SDL_GetWindowSurface(this->_window);
+    
 }
 
 SDL::SDL(SDL const & obj) : _window(obj._window){}
@@ -48,16 +49,14 @@ void SDL::drawBlock(int x, int y, Color c){
     delete r;
 }
 void SDL::drawText(int x, int y, std::string const txt){
-
+    IGNORE(x);
+    IGNORE(y);
+    IGNORE(txt);
 }
 
-void SDL::prerender(){
-    SDL_FillRect( this->_drawSurface, NULL, SDL_MapRGB( this->_drawSurface->format, 0x00, 0x00, 0x00 ) );
-   
-}
-void PollEvents(){
+void SDL::pollEvents(){
     SDL_Event e;
-    char *keyname;
+    
     while(SDL_PollEvent(&e) != 0){
         if( e.type == SDL_QUIT ) is_close = true;
         if( e.type == SDL_KEYUP ){
@@ -92,9 +91,14 @@ void PollEvents(){
         }
     }
 }
+
+void SDL::prerender(){
+    SDL_FillRect( this->_drawSurface, NULL, SDL_MapRGB( this->_drawSurface->format, 0x00, 0x00, 0x00 ) );
+   
+}
+
 void SDL::postrender(){
     SDL_UpdateWindowSurface( this->_window );
-    PollEvents();
 }
 
 void SDL::bindKeyCallback( const key_callback hook){

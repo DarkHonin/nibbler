@@ -1,17 +1,17 @@
-SFML_DLL=sfml.interface.dll
+NCUR_DLL=ncur.interface.dll
 GLFW_DLL=glfw.interface.dll
 SDL_DLL=sdl.interface.dll
 
-PATHS=$(realpath sfml sdl glfw)
+PATHS=$(realpath ncurses sdl glfw)
 echo = /bin/echo
 make=/usr/bin/make
 
-DLLS = $(GLFW_DLL) $(SDL_DLL) # $(SFML_DLL) 
+DLLS = $(GLFW_DLL) $(SDL_DLL) $(NCUR_DLL) 
 
 make: $(DLLS)
 
-$(SFML_DLL):
-	@$(make) -f sfml/makefile INTERFACE=$(realpath include) PATH=$(realpath sfml) SFML=$(SFML) BUILD=$(realpath $(BUILD))
+$(NCUR_DLL):
+	@$(make) -f ncurses/makefile INTERFACE=$(realpath include) PATH=$(realpath ncurses) NCUR=$(NCUR) BUILD=$(realpath $(BUILD))
 
 $(SDL_DLL):
 	@$(make) -f sdl/makefile INTERFACE=$(realpath include) PATH=$(realpath sdl) SDL=$(SDL) BUILD=$(realpath $(BUILD))

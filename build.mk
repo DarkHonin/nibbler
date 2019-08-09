@@ -11,13 +11,14 @@ INCLUDE_PATHS += $(PATH)/include
 
 INCLUDE=$(addprefix -I, $(INCLUDE_PATHS))
 
-FLAGS= -std=c++11 #-Wextra -Wall -Werror
+FLAGS= -std=c++11 -Wextra -Wall -Werror
 GCC=/usr/bin/clang++
 
 make: info $(OBJ_PATH) $(OBJ) $(NAME)
 	
 info:
 	@$(echo) "#### INFO ####"
+	@$(echo) Name: $(NAME)
 	@$(echo) path: $(PATH)
 	@$(echo) object path: $(OBJ_PATH)
 	@$(echo) SRC: $(SRC)
